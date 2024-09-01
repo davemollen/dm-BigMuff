@@ -1,0 +1,5 @@
+[package]
+name = "big_muff"
+version = "0.1.0"
+authors = ["davemollen <davemollen@gmail.com>"]
+edition = "2021"

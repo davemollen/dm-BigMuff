@@ -1,0 +1,47 @@
+label {
+  font-size: 14px;
+  color: #100f14;
+}
+
+knob {
+  width: 40px;
+  height: 40px;
+}
+
+knob .knob-track {
+  display: none;
+}
+
+knob .knob-head {
+  width: 1s;
+  height: 1s;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  border-width: 0px;
+  background-color: #100f14;
+}
+
+knob .knob-tick {
+  width: 4px;
+  height: 12px;
+  border-radius: 2px;
+  background-color: #eceaee;
+}
+
+textbox {
+  font-size: 12px;
+  width: 72px;
+  color: #100f14;
+  background-color: transparent;
+  border-width: 0px;
+  outline-color: none;
+  child-space: 1s;
+}
+
+textbox:hover {
+  background-color: transparent;
+  border-width: 0px;
+  outline-color: none;
+}
