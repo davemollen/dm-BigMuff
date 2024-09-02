@@ -5,24 +5,37 @@ from enum import Enum
 
 # Set the sample rate
 sample_rate = 44100  # in Hz
-double_sample_rate = sample_rate * 2.
 
-# Change the drive value to see the difference in the frequency response
+# Change the sustain value to see the difference in the frequency response
 # Keep it between 0 and 1
-drive = 0.
+sustain = 1.
 
-def generate_s_domain_coefficients(drive):
-  r1 = 4700.
-  c1 = 4.7e-8
-  r2 = drive * 1000000 + 33000
+def generate_s_domain_coefficients(sustain):
+  # The following transfer function was derived with QsapecNG:
+  # ( C1 * R2 * R5 + 1-sus * C1 * R2 + C1 * R1 * R5 + 1-sus * C1 * R1 ) * s + ( R5 + 1-sus + sustain + R2 + R1 )
+  # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # ( C1 * C2 * R2 * R5 * R6 + 1-sus * C1 * C2 * R2 * R6 + C1 * C2 * R2 * R6 * sustain ) * s^2 + ( C2 * R5 * R6 + 1-sus * C2 * R6 + C2 * R6 * sustain + C2 * R2 * R6 + C1 * R2 * R5 + 1-sus * C1 * R2 + C1 * R2 * sustain + C2 * R1 * R6 ) * s + ( R5 + 1-sus + sustain + R2 + R1 )
 
-  a1 = r1 * c1
-  b1 = r2 * c1 + a1
+  # This function implements this transfer function, but with less repeated calculations.
 
-  return ([0., b1, 1.], [0., a1, 1.])
+  c1 = 1e-5
+  c2 = 1e-8
+  r1 = 560000
+  r2 = 62000
+  r3_a = (1-sustain) * 10000
+  r3_b = sustain * 10000
+  r5 = 47
+  r6 = 47000
+  
+  b1 = c1 * r2 * r5 + r3_b * c1 * r2 + c1 * r1 * r5 + r3_b * c1 * r1
+  b2 = r5 + r3_b + r3_a + r2 + r1
+  a0 = c1 * c2 * r2 * r5 * r6 + r3_b * c1 * c2 * r2 * r6 + c1 * c2 * r2 * r6 * r3_a
+  a1 = c2 * r5 * r6 + r3_b * c2 * r6 + c2 * r6 * r3_a + c2 * r2 * r6 + c1 * r2 * r5 + r3_b * c1 * r2 + c1 * r2 * r3_a + c2 * r1 * r6
+  
+  return ([0., b1, b2], [a0, a1, b2])
 
 # Get generated s-domain coefficients
-num, den = generate_s_domain_coefficients(drive)
+num, den = generate_s_domain_coefficients(sustain)
 print('s-domain coefficients', (num, den))
 
 # Apply the bilinear transform
@@ -42,5 +55,5 @@ plt.xlabel('frequency [Hz]')
 plt.grid()
 plt.axis('tight')
 plt.xlim([10, 20000])
-plt.ylim([0, 50])
+plt.ylim([-60, 20])
 plt.show()

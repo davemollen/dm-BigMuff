@@ -7,41 +7,32 @@ sample_rate = 44100  # in Hz
 
 # Change the tone value to see the difference in the frequency response
 # Keep it between 0 and 1
-tone = 1.
+tone = 0.5
 
 def generate_s_domain_coefficients(tone):
   # The following transfer function was derived with QsapecNG:
-  # ( C2 * C3 * R2 * R3 * Rr + C2 * C3 * R2 * R3 * Rl + C2 * C3 * R2 * Rl * Rr ) * s^2 + ( C3 * R3 * Rr + C3 * R3 * Rl + C3 * Rl * Rr + C2 * R2 * Rr + C2 * R2 * Rl + C3 * R2 * Rr ) * s + ( Rr + Rl )
-  # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ( C1 * C2 * C3 * R1 * R2 * R3 * Rr + C1 * C2 * C3 * R1 * R2 * R3 * Rl + C1 * C2 * C3 * R1 * R2 * Rl * Rr ) * s^3 + ( C2 * C3 * R2 * R3 * Rr + C2 * C3 * R2 * R3 * Rl + C2 * C3 * R2 * Rl * Rr + C1 * C3 * R1 * R3 * Rr + C1 * C3 * R1 * R3 * Rl + C1 * C3 * R1 * Rl * Rr + C1 * C2 * R1 * R2 * Rr + C1 * C2 * R1 * R2 * Rl + C2 * C3 * R1 * R2 * Rl ) * s^2 + ( C3 * R3 * Rr + C3 * R3 * Rl + C3 * Rl * Rr + C2 * R2 * Rr + C2 * R2 * Rl + C1 * R1 * Rr + C1 * R1 * Rl + C3 * R1 * Rl ) * s + ( Rr + Rl )
+  # 1-t * C1 * C2 * C3 * R1 * R4 * s^3 + ( C1 * C2 * R1 * R4 + 1-t * C1 * C2 * R1 + C1 * C2 * R1 * t + 1-t * C2 * C3 * R1 ) * s^2 + ( C1 * t + C1 * R1 + C2 * R1 ) * s
+  # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # ( 1-t * C1 * C2 * C3 * R1 * R4 + C1 * C2 * C3 * R1 * R4 * t ) * s^3 + ( C1 * C2 * R1 * R4 + 1-t * C1 * C2 * R1 + C1 * C2 * R1 * t + 1-t * C1 * C3 * R4 + C1 * C3 * R4 * t + C1 * C3 * R1 * R4 + 1-t * C2 * C3 * R1 + C2 * C3 * R1 * t ) * s^2 + ( C1 * R4 + 1-t * C1 + C1 * t + C1 * R1 + C2 * R1 + 1-t * C3 + C3 * t + C3 * R1 ) * s + 1
 
   # This function implements this transfer function, but with less repeated calculations.
+  c1 = 1e-6
+  c2 = 1e-7
+  c3 = 1.2e-7
+  r1 = 1200
+  r2_a = (1-tone) * 10000
+  r2_b = tone * 10000 
+  r4 = 5600
 
-  R1 = 10e3
-  C1 = 1.8e-8
-  R2 = 10e3
-  C2 = 1e-8
-  C3 = 2.7e-8
-  R3 = 470
+  b0 = r2_b * c1 * c2 * c3 * r1 * r4
+  b1 = c1 * c2 * r1 * r4 + r2_b * c1 * c2 * r1 + c1 * c2 * r1 * r2_a + r2_b * c2 * c3 * r1
+  b2 = c1 * r2_a + c1 * r1 + c2 * r1
+  
+  a0 = r2_b * c1 * c2 * c3 * r1 * r4 + c1 * c2 * c3 * r1 * r4 * r2_a
+  a1 = c1 * c2 * r1 * r4 + r2_b * c1 * c2 * r1 + c1 * c2 * r1 * r2_a + r2_b * c1 * c3 * r4 + c1 * c3 * r4 * r2_a + c1 * c3 * r1 * r4 + r2_b * c2 * c3 * r1 + c2 * c3 * r1 * r2_a
+  a2 = c1 * r4 + r2_b * c1 + c1 * r2_a + c1 * r1 + c2 * r1 + r2_b * c3 + c3 * r2_a + c3 * r1
 
-  Rl = 1. - tone
-  Rr = tone
-
-  b0 = C2 * C3 * R2 * R3 * Rr + C2 * C3 * R2 * R3 * Rl + C2 * C3 * R2 * Rl * Rr
-
-  return (
-    [
-      b0,
-      C3 * R3 * Rr + C3 * R3 * Rl + C3 * Rl * Rr + C2 * R2 * Rr + C2 * R2 * Rl + C3 * R2 * Rr,
-      Rr + Rl
-    ],
-    [
-      C1 * C2 * C3 * R1 * R2 * R3 * Rr + C1 * C2 * C3 * R1 * R2 * R3 * Rl + C1 * C2 * C3 * R1 * R2 * Rl * Rr,
-      b0 + C1 * C3 * R1 * R3 * Rr + C1 * C3 * R1 * R3 * Rl + C1 * C3 * R1 * Rl * Rr + C1 * C2 * R1 * R2 * Rr + C1 * C2 * R1 * R2 * Rl + C2 * C3 * R1 * R2 * Rl,
-      C3 * R3 * Rr + C3 * R3 * Rl + C3 * Rl * Rr + C2 * R2 * Rr + C2 * R2 * Rl + C1 * R1 * Rr + C1 * R1 * Rl + C3 * R1 * Rl,
-      Rr + Rl
-    ]
-  )
+  return ([b0, b1, b2, 0], [a0, a1, a2, 1])
 
 
 # Get generated s-domain coefficients
@@ -65,5 +56,5 @@ plt.xlabel('frequency [Hz]')
 plt.grid()
 plt.axis('tight')
 plt.xlim([10, 20000])
-plt.ylim([-40, 4])
+plt.ylim([-36, 0])
 plt.show()
