@@ -8,7 +8,7 @@ sample_rate = 44100  # in Hz
 
 # Change the sustain value to see the difference in the frequency response
 # Keep it between 0 and 1
-sustain = 1.
+sustain = 0.5
 
 def generate_s_domain_coefficients(sustain):
   # The following transfer function was derived with QsapecNG:
@@ -26,11 +26,17 @@ def generate_s_domain_coefficients(sustain):
   r3_b = sustain * 10000
   r5 = 47
   r6 = 47000
+
+  c1r1 = c1 * r1
+  c1r2 = c1 * r2
+  c2r6 = c2 * r6
+  c1c2r2r6 = c1r2 * c2r6
   
-  b1 = c1 * r2 * r5 + r3_b * c1 * r2 + c1 * r1 * r5 + r3_b * c1 * r1
+  b1_a1 = c1r2 * r5 + c1r2 * r3_b
+  b1 = b1_a1 + c1r1 * r5 + c1r1 * r3_b
   b2 = r5 + r3_b + r3_a + r2 + r1
-  a0 = c1 * c2 * r2 * r5 * r6 + r3_b * c1 * c2 * r2 * r6 + c1 * c2 * r2 * r6 * r3_a
-  a1 = c2 * r5 * r6 + r3_b * c2 * r6 + c2 * r6 * r3_a + c2 * r2 * r6 + c1 * r2 * r5 + r3_b * c1 * r2 + c1 * r2 * r3_a + c2 * r1 * r6
+  a0 = c1c2r2r6 * r5 + c1c2r2r6 * r3_b + c1c2r2r6 * r3_a
+  a1 = b1_a1 + c2r6 * r5 + c2r6 * r3_b + c2r6 * r3_a + c2r6 * r2 + c2r6 * r1 + c1r2 * r3_a
   
   return ([0., b1, b2], [a0, a1, b2])
 

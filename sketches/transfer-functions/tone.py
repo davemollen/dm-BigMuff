@@ -24,13 +24,21 @@ def generate_s_domain_coefficients(tone):
   r2_b = tone * 10000 
   r4 = 5600
 
-  b0 = r2_b * c1 * c2 * c3 * r1 * r4
-  b1 = c1 * c2 * r1 * r4 + r2_b * c1 * c2 * r1 + c1 * c2 * r1 * r2_a + r2_b * c2 * c3 * r1
-  b2 = c1 * r2_a + c1 * r1 + c2 * r1
+  c1r1 = c1 * r1
+  c1c2r1 = c1r1 * c2
+  c3r4 = c3 * r4
+  c3r1 = c3 * r1
+  c1c3r4 = c1 * c3r4
+  c1c2c3r1r4 = c1c2r1 * c3r4
+  c1c2c3r1r4r2_a = c1c2c3r1r4 * r2_a
+  b0 = c1c2c3r1r4 * r2_b
+
+  b1 = c1c2r1 * r4 + c1c2r1 * r2_b + c1c2r1 * r2_a + r2_b * c2 * c3r1
+  b2 = c1 * r2_a + c1r1 + c2 * r1
   
-  a0 = r2_b * c1 * c2 * c3 * r1 * r4 + c1 * c2 * c3 * r1 * r4 * r2_a
-  a1 = c1 * c2 * r1 * r4 + r2_b * c1 * c2 * r1 + c1 * c2 * r1 * r2_a + r2_b * c1 * c3 * r4 + c1 * c3 * r4 * r2_a + c1 * c3 * r1 * r4 + r2_b * c2 * c3 * r1 + c2 * c3 * r1 * r2_a
-  a2 = c1 * r4 + r2_b * c1 + c1 * r2_a + c1 * r1 + c2 * r1 + r2_b * c3 + c3 * r2_a + c3 * r1
+  a0 = b0 + c1c2c3r1r4r2_a
+  a1 = b1 + c1c3r4 * r2_b + c1c3r4 * r2_a + c1c3r4 * r1 + c2 * c3r1 * r2_a
+  a2 = b2 + c1 * r4 + c1 * r2_b + c3 * r2_b + c3 * r2_a + c3r1
 
   return ([b0, b1, b2, 0], [a0, a1, a2, 1])
 

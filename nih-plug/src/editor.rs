@@ -43,10 +43,10 @@ pub(crate) fn create(
         HStack::new(cx, |cx| {
           ParamKnob::new(
             cx,
-            params.drive.name(),
+            params.vol.name(),
             UiData::params,
-            params.drive.as_ptr(),
-            |params| &params.drive,
+            params.vol.as_ptr(),
+            |params| &params.vol,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Regular,
           );
@@ -63,10 +63,10 @@ pub(crate) fn create(
 
           ParamKnob::new(
             cx,
-            params.level.name(),
+            params.sustain.name(),
             UiData::params,
-            params.level.as_ptr(),
-            |params| &params.level,
+            params.sustain.as_ptr(),
+            |params| &params.sustain,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Regular,
           );
@@ -74,7 +74,7 @@ pub(crate) fn create(
         .child_space(Stretch(1.0))
         .col_between(Pixels(8.0));
 
-        Label::new(cx, "SD1")
+        Label::new(cx, "Big Muff")
           .font_size(22.0)
           .font_weight(FontWeightKeyword::Bold)
           .border_radius(Pixels(16.0))
@@ -87,7 +87,7 @@ pub(crate) fn create(
           .left(Stretch(1.0));
       })
       .child_space(Pixels(16.0))
-      .background_color("#E9D25F");
+      .background_color("#F66A00");
     },
   )
 }

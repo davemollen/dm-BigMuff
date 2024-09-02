@@ -1,4 +1,4 @@
-use crate::sd1_parameters::SD1Parameters;
+use crate::big_muff_parameters::BigMuffParameters;
 use nih_plug::{params::internals::ParamPtr, prelude::GuiContext};
 use nih_plug_vizia::vizia::prelude::*;
 use std::sync::Arc;
@@ -8,7 +8,7 @@ pub enum ParamChangeEvent {
 
 #[derive(Lens)]
 pub struct UiData {
-  pub params: Arc<SD1Parameters>,
+  pub params: Arc<BigMuffParameters>,
   pub gui_context: Arc<dyn GuiContext>,
 }
 

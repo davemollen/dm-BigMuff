@@ -22,7 +22,7 @@ impl Clipper {
   pub fn process(&mut self, input: f32) -> f32 {
     let upsampled = self
       .upsample_fir
-      .process(f32x8::splat(offset * OVERSAMPLE_FACTOR));
+      .process(f32x8::splat(input * 0.875 * OVERSAMPLE_FACTOR));
     let clipped = Self::clip(upsampled);
     self.downsample_fir.process(clipped).reduce_sum() * 0.9731
   }

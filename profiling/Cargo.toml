@@ -11,12 +11,12 @@ debug = true
 
 [dependencies]
 fastrand = "2.1.0"
-sd1 = { path = "../sd1" }
+big_muff = { path = "../big_muff" }
 
 [dev-dependencies]
 criterion = { version = "0.4", features = ["html_reports"] }
 flamegraph = "0.3"
 
 [[bench]]
-name = "sd1_bench"
+name = "big_muff_bench"
 harness = false

@@ -1,7 +1,7 @@
-extern crate lv2;
 extern crate big_muff;
-use lv2::prelude::*;
+extern crate lv2;
 use big_muff::BigMuff;
+use lv2::prelude::*;
 
 #[derive(PortCollection)]
 struct Ports {
@@ -13,12 +13,12 @@ struct Ports {
 }
 
 #[uri("https://github.com/davemollen/dm-BigMuff")]
-struct DmSD1 {
+struct DmBigMuff {
   big_muff: BigMuff,
   is_active: bool,
 }
 
-impl Plugin for DmSD1 {
+impl Plugin for DmBigMuff {
   // Tell the framework which ports this plugin has.
   type Ports = Ports;
 
@@ -53,4 +53,4 @@ impl Plugin for DmSD1 {
 }
 
 // Generate the plugin descriptor function which exports the plugin to the outside world.
-lv2_descriptors!(DmSD1);
+lv2_descriptors!(DmBigMuff);

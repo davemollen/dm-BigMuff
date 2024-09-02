@@ -62,11 +62,15 @@ checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
 name = "benches"
 version = "0.1.0"
 dependencies = [
+ "big_muff",
  "criterion",
  "fastrand",
  "flamegraph",
- "sd1",
 ]
+
+[[package]]
+name = "big_muff"
+version = "0.1.0"
 
 [[package]]
 name = "bitflags"
@@ -767,10 +771,6 @@ name = "scopeguard"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
-
-[[package]]
-name = "sd1"
-version = "0.1.0"
 
 [[package]]
 name = "semver"

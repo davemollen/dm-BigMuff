@@ -443,6 +443,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "big_muff"
+version = "0.1.0"
+
+[[package]]
 name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -931,12 +935,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "dm_sd1"
+name = "dm_big_muff"
 version = "0.1.0"
 dependencies = [
+ "big_muff",
  "nih_plug",
  "nih_plug_vizia",
- "sd1",
 ]
 
 [[package]]
@@ -2566,10 +2570,6 @@ dependencies = [
  "quote",
  "syn 2.0.66",
 ]
-
-[[package]]
-name = "sd1"
-version = "0.1.0"
 
 [[package]]
 name = "selectors"
