@@ -56,8 +56,7 @@ impl Plugin for DmBigMuff {
   }
 
   fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
-    // editor::create(self.params.clone(), self.params.editor_state.clone())
-    None
+    editor::create(self.params.clone(), self.params.editor_state.clone())
   }
 
   fn initialize(
