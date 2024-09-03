@@ -1,5 +1,5 @@
-use nih_plug::prelude::*;
 use big_muff::BigMuff;
+use nih_plug::prelude::*;
 use std::sync::Arc;
 mod big_muff_parameters;
 use big_muff_parameters::BigMuffParameters;
@@ -12,11 +12,11 @@ struct DmBigMuff {
 
 impl DmBigMuff {
   pub fn get_params(&self) -> (f32, f32, f32) {
-    let vol = self.big_muff.map_vol_param(self.params.vol.value());
+    let vol = self.params.vol.value();
     let tone = self.params.tone.value();
     let sustain = self.params.sustain.value();
 
-    (vol, tone, sustain)
+    self.big_muff.map_params(vol, tone, sustain)
   }
 }
 
@@ -56,7 +56,8 @@ impl Plugin for DmBigMuff {
   }
 
   fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
-    editor::create(self.params.clone(), self.params.editor_state.clone())
+    // editor::create(self.params.clone(), self.params.editor_state.clone())
+    None
   }
 
   fn initialize(

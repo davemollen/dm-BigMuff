@@ -34,8 +34,12 @@ impl BigMuff {
     }
   }
 
-  pub fn map_vol_param(&self, vol: f32) -> f32 {
-    vol * vol * vol
+  pub fn map_params(&self, vol: f32, tone: f32, sustain: f32) -> (f32, f32, f32) {
+    (
+      Self::apply_log_curve(vol),
+      tone,
+      Self::apply_log_curve(sustain),
+    )
   }
 
   pub fn initialize_params(&mut self, vol: f32, tone: f32, sustain: f32) {
@@ -56,5 +60,9 @@ impl BigMuff {
     let tone_output = self.tone.process(clip_output, tone);
 
     tone_output * vol
+  }
+
+  fn apply_log_curve(input: f32) -> f32 {
+    input * input * input
   }
 }

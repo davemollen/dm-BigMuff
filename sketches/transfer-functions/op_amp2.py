@@ -9,6 +9,7 @@ sample_rate = 44100  # in Hz
 # Change the sustain value to see the difference in the frequency response
 # Keep it between 0 and 1
 sustain = 0.5
+sustain *= sustain * sustain
 
 def generate_s_domain_coefficients(sustain):
   # The following transfer function was derived with QsapecNG:
