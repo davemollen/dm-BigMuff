@@ -28,7 +28,7 @@ impl OpAmp2 {
     self.filter(input, z_domain_coefficients)
   }
 
-  fn get_s_domain_coefficients(sustain: f32) -> ([f32; 4], [f32; 4]) {
+  fn get_s_domain_coefficients(sustain: f32) -> ([f32; 2], [f32; 4]) {
     let r_sus_a = sustain * R_SUS;
     let r_sus_b = (1. - sustain) * R_SUS;
 
@@ -74,33 +74,31 @@ impl OpAmp2 {
       + r_sus_a * c3r4
       + c3r4 * r_sus_b;
 
-    ([0., 0., b0, b1], [a0, a1, a2, b1])
+    ([b0, b1], [a0, a1, a2, b1])
   }
 
-  fn apply_bilinear_transform(&self, (mut b, mut a): ([f32; 4], [f32; 4])) -> ([f32; 4], [f32; 4]) {
-    b[1] *= self.s[0];
-    b[2] *= self.s[1];
-    b[3] *= self.s[2];
+  fn apply_bilinear_transform(&self, (mut b, mut a): ([f32; 2], [f32; 4])) -> ([f32; 4], [f32; 4]) {
+    b[0] *= self.s[1];
+    b[1] *= self.s[2];
 
-    b = [
-      b[0] + b[1] + b[2] + b[3],
-      -3. * b[0] - b[1] + b[2] + 3. * b[3],
-      3. * b[0] - b[1] - b[2] + 3. * b[3],
-      -b[0] + b[1] - b[2] + b[3],
-    ];
+    let b0 = b[0] + b[1];
+    let b1 = b[0] + 3. * b[1];
+    let b2 = -b[0] + 3. * b[1];
+    let b3 = -b[0] + b[1];
 
     a[1] *= self.s[0];
     a[2] *= self.s[1];
     a[3] *= self.s[2];
 
-    a = [
-      a[0] + a[1] + a[2] + a[3],
-      -3. * a[0] - a[1] + a[2] + 3. * a[3],
-      3. * a[0] - a[1] - a[2] + 3. * a[3],
-      -a[0] + a[1] - a[2] + a[3],
-    ];
+    let a0 = a[0] + a[1] + a[2] + a[3];
+    let a1 = -3. * a[0] - a[1] + a[2] + 3. * a[3];
+    let a2 = 3. * a[0] - a[1] - a[2] + 3. * a[3];
+    let a3 = -a[0] + a[1] - a[2] + a[3];
 
-    (b.map(|x| x / a[0]), a.map(|x| x / a[0]))
+    (
+      [b0 / a0, b1 / a0, b2 / a0, b3 / a0],
+      [1., a1 / a0, a2 / a0, a3 / a0],
+    )
   }
 
   fn filter(&mut self, x: f32, (b, a): ([f32; 4], [f32; 4])) -> f32 {
