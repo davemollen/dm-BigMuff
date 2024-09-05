@@ -12,11 +12,11 @@ struct DmBigMuff {
 
 impl DmBigMuff {
   pub fn get_params(&self) -> (f32, f32, f32) {
-    let vol = self.params.vol.value();
-    let tone = self.params.tone.value();
-    let sustain = self.params.sustain.value();
-
-    self.big_muff.map_params(vol, tone, sustain)
+    (
+      self.big_muff.map_vol_param(self.params.vol.value()),
+      self.params.tone.value(),
+      self.params.sustain.value(),
+    )
   }
 }
 

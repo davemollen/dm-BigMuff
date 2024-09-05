@@ -37,9 +37,9 @@ impl Plugin for DmBigMuff {
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
   fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
-    let (vol, tone, sustain) = self
-      .big_muff
-      .map_params(*ports.vol, *ports.tone, *ports.sustain);
+    let vol = self.big_muff.map_vol_param(*ports.vol);
+    let tone = *ports.tone;
+    let sustain = *ports.sustain;
 
     if !self.is_active {
       self.big_muff.initialize_params(vol, tone, sustain);
