@@ -18,7 +18,7 @@ impl Clipper {
   }
 
   pub fn process(&mut self, input: f32) -> f32 {
-    let upsampled = self.upsample_fir.upsample(input * 0.875);
+    let upsampled = self.upsample_fir.upsample(input * 0.664146);
     let clipped = Self::clip(upsampled);
     self.downsample_fir.downsample(clipped) * 0.926916
   }
