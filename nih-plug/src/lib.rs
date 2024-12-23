@@ -1,4 +1,4 @@
-use big_muff::BigMuff;
+use big_muff::{BigMuff, Params as ProcessParams};
 use nih_plug::prelude::*;
 use std::sync::Arc;
 mod big_muff_parameters;
@@ -8,16 +8,7 @@ mod editor;
 struct DmBigMuff {
   params: Arc<BigMuffParameters>,
   big_muff: BigMuff,
-}
-
-impl DmBigMuff {
-  pub fn get_params(&self) -> (f32, f32, f32) {
-    (
-      self.big_muff.map_vol_param(self.params.vol.value()),
-      self.params.tone.value(),
-      self.params.sustain.value(),
-    )
-  }
+  process_params: ProcessParams,
 }
 
 impl Default for DmBigMuff {
@@ -26,6 +17,7 @@ impl Default for DmBigMuff {
     Self {
       params: params.clone(),
       big_muff: BigMuff::new(44100.),
+      process_params: ProcessParams::new(44100.),
     }
   }
 }
@@ -66,8 +58,7 @@ impl Plugin for DmBigMuff {
     _context: &mut impl InitContext<Self>,
   ) -> bool {
     self.big_muff = BigMuff::new(buffer_config.sample_rate);
-    let (vol, tone, sustain) = self.get_params();
-    self.big_muff.initialize_params(vol, tone, sustain);
+    self.process_params = ProcessParams::new(buffer_config.sample_rate);
     true
   }
 
@@ -77,11 +68,15 @@ impl Plugin for DmBigMuff {
     _aux: &mut AuxiliaryBuffers,
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
-    let (vol, tone, sustain) = self.get_params();
+    self.process_params.set(
+      self.params.vol.value(),
+      self.params.tone.value(),
+      self.params.sustain.value(),
+    );
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let sample = channel_samples.iter_mut().next().unwrap();
-      *sample = self.big_muff.process(*sample, vol, tone, sustain);
+      *sample = self.big_muff.process(*sample, &mut self.process_params);
     });
     ProcessStatus::Normal
   }

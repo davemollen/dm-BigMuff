@@ -83,7 +83,7 @@ pub(crate) fn create(
           .child_space(Stretch(1.0))
           .child_top(Pixels(3.0))
           .child_bottom(Pixels(5.0))
-          .width(Pixels(80.0))
+          .width(Pixels(112.0))
           .left(Stretch(1.0));
       })
       .child_space(Pixels(16.0))
