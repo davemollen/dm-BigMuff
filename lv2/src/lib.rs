@@ -29,10 +29,10 @@ impl Plugin for DmBigMuff {
   // Create a new instance of the plugin; Trivial in this case.
   fn new(_plugin_info: &PluginInfo, _features: &mut ()) -> Option<Self> {
     let sample_rate = _plugin_info.sample_rate() as f32;
-    
+
     Some(Self {
       big_muff: BigMuff::new(sample_rate),
-      params: Params::new(sample_rate)
+      params: Params::new(sample_rate),
     })
   }
 

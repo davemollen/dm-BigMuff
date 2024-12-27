@@ -8,17 +8,17 @@ mod op_amp1;
 mod op_amp2;
 mod op_amp3;
 mod params;
-use {
-  clipper::Clipper, op_amp1::OpAmp1, op_amp2::OpAmp2, op_amp3::OpAmp3, params::Smoother, tone::Tone
-};
 pub use params::Params;
+use {
+  clipper::Clipper, op_amp1::OpAmp1, op_amp2::OpAmp2, op_amp3::OpAmp3, params::Smoother, tone::Tone,
+};
 
 pub struct BigMuff {
   op_amp1: OpAmp1,
   op_amp2: OpAmp2,
   op_amp3: OpAmp3,
   clipper: Clipper,
-  tone: Tone
+  tone: Tone,
 }
 
 impl BigMuff {
