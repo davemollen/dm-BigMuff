@@ -1,2 +1,6 @@
 target
 .DS_Store
+*.svg
+*libdm_big_muff.so
+*libdm_big_muff.dylib
+*libdm_big_muff.dll

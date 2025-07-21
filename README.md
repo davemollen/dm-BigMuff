@@ -8,6 +8,7 @@ The effect can be compiled to a [MOD audio](https://mod.audio/), VST3 or CLAP pl
 
 - [VST3 and CLAP installation](#VST3-and-CLAP-installation)
 - [MOD installation](#MOD-installation)
+- [MOD Desktop installation](#MOD-Desktop-installation)
 - [Copyright notices](#Copyright-notices)
 
 ## VST3 and CLAP installation
@@ -24,6 +25,10 @@ This plugin is not yet in the MOD Audio plugin store.
 However, you can download the latest MOD Dwarf build from the [releases page](https://github.com/davemollen/dm-BigMuff/releases).
 
 If you want to build the plugin on your own machine check out the [mod-plugin-builder repository](https://github.com/moddevices/mod-plugin-builder) for instructions.
+
+## MOD Desktop installation
+
+You can download the MOD Desktop lv2 plugin for Linux, Windows and macOS from the [releases page](https://github.com/davemollen/dm-BigMuff/releases). You can use the plugin in other lv2 hosts too, but you'll only have a GUI on MOD Desktop.
 
 ## Copyright notices
 
