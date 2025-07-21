@@ -5,11 +5,11 @@ use lv2::prelude::*;
 
 #[derive(PortCollection)]
 struct Ports {
-  vol: InputPort<Control>,
-  tone: InputPort<Control>,
-  sustain: InputPort<Control>,
-  input: InputPort<Audio>,
-  output: OutputPort<Audio>,
+  vol: InputPort<InPlaceControl>,
+  tone: InputPort<InPlaceControl>,
+  sustain: InputPort<InPlaceControl>,
+  input: InputPort<InPlaceAudio>,
+  output: OutputPort<InPlaceAudio>,
 }
 
 #[uri("https://github.com/davemollen/dm-BigMuff")]
@@ -39,10 +39,13 @@ impl Plugin for DmBigMuff {
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
   fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
-    self.params.set(*ports.vol, *ports.tone, *ports.sustain);
+    self
+      .params
+      .set(ports.vol.get(), ports.tone.get(), ports.sustain.get());
 
-    for (input, output) in ports.input.iter().zip(ports.output.iter_mut()) {
-      *output = self.big_muff.process(*input, &mut self.params);
+    for (input, output) in ports.input.iter().zip(ports.output.iter()) {
+      let big_muff_output = self.big_muff.process(input.get(), &mut self.params);
+      output.set(big_muff_output);
     }
   }
 }
