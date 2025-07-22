@@ -1,6 +1,6 @@
 target
 .DS_Store
-*.svg
-*libdm_big_muff.so
-*libdm_big_muff.dylib
-*libdm_big_muff.dll
+flamegraph.svg
+lv2/**/*.so
+lv2/**/*.dylib
+lv2/**/*.dll
