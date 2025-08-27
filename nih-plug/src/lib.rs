@@ -23,7 +23,7 @@ impl Default for DmBigMuff {
 }
 
 impl Plugin for DmBigMuff {
-  const NAME: &'static str = "dm-BigMuff";
+  const NAME: &'static str = "BigMuff";
   const VENDOR: &'static str = "DM";
   const URL: &'static str = "https://github.com/davemollen/dm-BigMuff";
   const EMAIL: &'static str = "davemollen@gmail.com";
