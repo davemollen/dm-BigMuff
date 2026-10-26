@@ -1,6 +1,6 @@
 extern crate big_muff;
 extern crate lv2;
-use big_muff::{BigMuff, Params};
+use big_muff::{BigMuff, Bypass, Params};
 use lv2::prelude::*;
 
 #[derive(PortCollection)]
@@ -10,12 +10,14 @@ struct Ports {
   sustain: InputPort<InPlaceControl>,
   input: InputPort<InPlaceAudio>,
   output: OutputPort<InPlaceAudio>,
+  enabled: InputPort<InPlaceControl>,
 }
 
 #[uri("https://github.com/davemollen/dm-BigMuff")]
 struct DmBigMuff {
   big_muff: BigMuff,
   params: Params,
+  bypass: Bypass,
 }
 
 impl Plugin for DmBigMuff {
@@ -33,6 +35,7 @@ impl Plugin for DmBigMuff {
     Some(Self {
       big_muff: BigMuff::new(sample_rate),
       params: Params::new(sample_rate),
+      bypass: Bypass::new(sample_rate),
     })
   }
 
@@ -40,17 +43,30 @@ impl Plugin for DmBigMuff {
   fn activate(&mut self, _features: &mut Self::InitFeatures) {
     self.big_muff.reset();
     self.params.reset();
+    self.bypass.reset();
   }
 
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
-  fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
+  fn run(&mut self, ports: &mut Ports, _features: &mut (), sample_count: u32) {
+    self.bypass.set_enabled(ports.enabled.get() == 0., || {
+      self.big_muff.reset();
+      self.params.reset();
+    });
+
+    if self.bypass.is_done_activating() {
+      ports.output.copy_from(&ports.input, sample_count);
+      return;
+    }
+
     self
       .params
       .set(ports.vol.get(), ports.tone.get(), ports.sustain.get());
 
     for (input, output) in ports.input.iter().zip(ports.output.iter()) {
-      let big_muff_output = self.big_muff.process(input.get(), &mut self.params);
+      let dry = input.get();
+      let wet = self.big_muff.process(dry, &mut self.params);
+      let big_muff_output = self.bypass.process(dry, wet);
       output.set(big_muff_output);
     }
   }
