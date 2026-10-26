@@ -22,6 +22,10 @@ impl OpAmp2 {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.z = [0.; 3];
+  }
+
   pub fn process(&mut self, input: f32, sustain: f32) -> f32 {
     let s_domain_coefficients = Self::get_s_domain_coefficients(sustain);
     let z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);

@@ -9,6 +9,10 @@ impl OpAmp1 {
     Self { s: t / 2., z: 0. }
   }
 
+  pub fn reset(&mut self) {
+    self.z = 0.;
+  }
+
   pub fn process(&mut self, input: f32, s_domain_coefficients: (f32, [f32; 2])) -> f32 {
     let z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);
     self.filter(input, z_domain_coefficients)

@@ -12,6 +12,10 @@ impl OpAmp3 {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.z = [0.; 2];
+  }
+
   pub fn process(&mut self, input: f32, s_domain_coefficients: (f32, [f32; 3])) -> f32 {
     let z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);
     self.filter(input, z_domain_coefficients)

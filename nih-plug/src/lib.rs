@@ -69,6 +69,11 @@ impl Plugin for DmBigMuff {
     true
   }
 
+  fn reset(&mut self) {
+    self.big_muff.reset();
+    self.process_params.reset();
+  }
+
   fn process(
     &mut self,
     buffer: &mut Buffer,

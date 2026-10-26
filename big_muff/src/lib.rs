@@ -32,6 +32,14 @@ impl BigMuff {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.op_amp1.reset();
+    self.op_amp2.reset();
+    self.op_amp3.reset();
+    self.clipper.reset();
+    self.tone.reset();
+  }
+
   pub fn process(&mut self, input: f32, params: &mut Params) -> f32 {
     let vol = params.vol.next();
     let tone = params.tone.next();

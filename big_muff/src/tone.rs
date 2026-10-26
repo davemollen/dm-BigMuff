@@ -15,8 +15,12 @@ impl Tone {
     let t = sample_rate.recip();
     Self {
       s: [t / 2., t * t / 4., t * t * t / 8.],
-      z: [0.0; 3],
+      z: [0.; 3],
     }
+  }
+
+  pub fn reset(&mut self) {
+    self.z = [0.; 3];
   }
 
   pub fn process(&mut self, input: f32, tone: f32) -> f32 {

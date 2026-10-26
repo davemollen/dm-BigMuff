@@ -25,6 +25,10 @@ impl FirFilter {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.buffer.fill(f32x8::splat(0.));
+  }
+
   pub fn upsample(&mut self, input: f32) -> f32x8 {
     self.write(f32x8::splat(input * OVERSAMPLE_FACTOR));
     (0..self.buffer.len())

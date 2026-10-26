@@ -19,6 +19,10 @@ impl Params {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.is_initialized = false;
+  }
+
   pub fn set(&mut self, vol: f32, tone: f32, sustain: f32) {
     if self.is_initialized {
       self.vol.set_target(vol * vol * vol);
