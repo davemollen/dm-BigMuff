@@ -46,14 +46,9 @@ impl BigMuff {
     let tone = params.tone.next();
     let sustain = params.sustain.next();
 
-    let op_amp1_output = self
-      .op_amp1
-      .process(input, (-5.8928571428571, [1., 119.04761904762]));
+    let op_amp1_output = self.op_amp1.process(input);
     let op_amp2_output = self.op_amp2.process(op_amp1_output, sustain);
-    let op_amp3_output = self.op_amp3.process(
-      op_amp2_output,
-      (-813008.1300813, [1., 14210.344231102, 368043.51746551]),
-    );
+    let op_amp3_output = self.op_amp3.process(op_amp2_output);
     let clip_output = self.clipper.process(op_amp3_output);
     let tone_output = self.tone.process(clip_output, tone);
 

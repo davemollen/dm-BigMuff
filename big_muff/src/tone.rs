@@ -8,6 +8,8 @@ const R4: f32 = 5600.;
 pub struct Tone {
   s: [f32; 3],
   z: [f32; 3],
+  prev_tone: Option<f32>,
+  z_domain_coefficients: ([f32; 4], [f32; 4]),
 }
 
 impl Tone {
@@ -16,6 +18,8 @@ impl Tone {
     Self {
       s: [t / 2., t * t / 4., t * t * t / 8.],
       z: [0.; 3],
+      prev_tone: None,
+      z_domain_coefficients: ([0.; 4], [0.; 4]),
     }
   }
 
@@ -24,9 +28,12 @@ impl Tone {
   }
 
   pub fn process(&mut self, input: f32, tone: f32) -> f32 {
-    let s_domain_coefficients = Self::get_s_domain_coefficients(tone);
-    let z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);
-    self.filter(input, z_domain_coefficients)
+    if self.prev_tone.map_or(true, |value| value != tone) {
+      let s_domain_coefficients = Self::get_s_domain_coefficients(tone);
+      self.z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);
+      self.prev_tone = Some(tone);
+    }
+    self.filter(input, self.z_domain_coefficients)
   }
 
   fn get_s_domain_coefficients(tone: f32) -> ([f32; 3], [f32; 3]) {

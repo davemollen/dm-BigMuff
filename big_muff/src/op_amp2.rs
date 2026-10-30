@@ -11,6 +11,8 @@ const C3: f32 = 1e-5;
 pub struct OpAmp2 {
   s: [f32; 3],
   z: [f32; 3],
+  prev_sustain: Option<f32>,
+  z_domain_coefficients: ([f32; 4], [f32; 4]),
 }
 
 impl OpAmp2 {
@@ -19,6 +21,8 @@ impl OpAmp2 {
     Self {
       s: [t / 2., t * t / 4., t * t * t / 8.],
       z: [0.; 3],
+      prev_sustain: None,
+      z_domain_coefficients: ([0.; 4], [0.; 4]),
     }
   }
 
@@ -27,9 +31,12 @@ impl OpAmp2 {
   }
 
   pub fn process(&mut self, input: f32, sustain: f32) -> f32 {
-    let s_domain_coefficients = Self::get_s_domain_coefficients(sustain);
-    let z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);
-    self.filter(input, z_domain_coefficients)
+    if self.prev_sustain.map_or(true, |value| value != sustain) {
+      let s_domain_coefficients = Self::get_s_domain_coefficients(sustain);
+      self.z_domain_coefficients = self.apply_bilinear_transform(s_domain_coefficients);
+      self.prev_sustain = Some(sustain);
+    }
+    self.filter(input, self.z_domain_coefficients)
   }
 
   fn get_s_domain_coefficients(sustain: f32) -> ([f32; 2], [f32; 4]) {
